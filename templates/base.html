@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Project Nexus{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        nexus: {
+                            dark: '#020617',    // Deep Space
+                            card: 'rgba(255, 255, 255, 0.03)',
+                            glass: 'rgba(255, 255, 255, 0.05)',
+                            sidebar: 'rgba(15, 23, 42, 0.6)',
+                            accent: '#3b82f6',  // Blue 500
+                            secondary: '#8b5cf6', // Violet 500
+                            success: '#10b981', // Emerald 500
+                            warning: '#f59e0b', // Amber 500
+                            danger: '#ef4444',  // Red 500
+                        }
+                    },
+                    backgroundImage: {
+                        'nebula': 'radial-gradient(circle at 0% 0%, rgba(59, 130, 246, 0.15) 0%, transparent 50%), radial-gradient(circle at 100% 100%, rgba(139, 92, 246, 0.15) 0%, transparent 50%)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .glass-hover:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-glass {
+            background: rgba(2, 6, 23, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        :root {
+            color-scheme: dark;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #020617;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #334155;
+        }
+    </style>
+</head>
+
+<body
+    class="bg-nexus-dark text-slate-300 antialiased font-sans min-h-screen bg-nebula bg-fixed selection:bg-nexus-accent selection:text-white">
+    <div class="flex h-screen overflow-hidden">
+
+        <!-- Glass Sidebar -->
+        <aside
+            class="w-72 sidebar-glass text-white flex flex-col transition-all duration-300 fixed md:relative z-30 h-full hidden md:flex">
+            <div class="p-8">
+                <h1
+                    class="text-3xl font-bold tracking-tight font-display bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-violet-400">
+                    Nexus</h1>
+                <p class="text-xs text-slate-500 font-medium tracking-wider uppercase mt-1">Campus Super-App</p>
+            </div>
+
+            <nav class="flex-1 overflow-y-auto px-4 py-2">
+                <ul class="space-y-1">
+                    <li>
+                        <a href="{% url 'dashboard' %}"
+                            class="flex items-center px-4 py-3.5 rounded-xl transition-all duration-200 group {% if request.resolver_match.url_name == 'dashboard' %}bg-gradient-to-r from-blue-600/20 to-violet-600/20 text-blue-400 border border-blue-500/20 shadow-[0_0_15px_rgba(59,130,246,0.15)]{% else %}text-slate-400 hover:text-white hover:bg-white/5{% endif %}">
+                            <span
+                                class="mr-4 text-lg opacity-80 group-hover:scale-110 transition-transform duration-200">🚀</span>
+                            <span class="font-medium tracking-wide">Dashboard</span>
+                        </a>
+                    </li>
+
+                    <div class="pt-6 pb-3 px-4">
+                        <p class="text-[10px] font-bold text-slate-600 uppercase tracking-[0.2em]">Daily Pulse</p>
+                    </div>
+                    <li>
+                        <a href="#"
+                            class="flex items-center px-4 py-3 rounded-xl text-slate-500 hover:text-slate-400 cursor-not-allowed group transition-all">
+                            <span class="mr-4 text-lg grayscale opacity-50">🍽️</span>
+                            <span class="font-medium">Mess Menu</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'administration:complaint_list' %}"
+                            class="flex items-center px-4 py-3 rounded-xl transition-all duration-200 group {% if 'administration' in request.path %}bg-white/5 text-white{% else %}text-slate-500 hover:text-slate-400 hover:bg-white/5{% endif %}">
+                            <span
+                                class="mr-4 text-lg opacity-80 group-hover:scale-110 transition-transform duration-200">📢</span>
+                            <span class="font-medium">RMS / Help</span>
+                        </a>
+                    </li>
+
+                    <div class="pt-6 pb-3 px-4">
+                        <p class="text-[10px] font-bold text-slate-600 uppercase tracking-[0.2em]">Exchange</p>
+                    </div>
+                    <li>
+                        <a href="{% url 'student_exchange:marketplace' %}"
+                            class="flex items-center px-4 py-3 rounded-xl transition-all duration-200 group {% if 'marketplace' in request.path %}bg-white/5 text-white{% else %}text-slate-500 hover:text-slate-400 hover:bg-white/5{% endif %}">
+                            <span
+                                class="mr-4 text-lg opacity-80 group-hover:scale-110 transition-transform duration-200">🛒</span>
+                            <span class="font-medium">Marketplace</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'student_exchange:travel_list' %}"
+                            class="flex items-center px-4 py-3 rounded-xl transition-all duration-200 group {% if 'travel' in request.path %}bg-white/5 text-white{% else %}text-slate-500 hover:text-slate-400 hover:bg-white/5{% endif %}">
+                            <span
+                                class="mr-4 text-lg opacity-80 group-hover:scale-110 transition-transform duration-200">🚕</span>
+                            <span class="font-medium">Transport</span>
+                        </a>
+                    </li>
+
+                    <div class="pt-6 pb-3 px-4">
+                        <p class="text-[10px] font-bold text-slate-600 uppercase tracking-[0.2em]">Academics</p>
+                    </div>
+                    <li>
+                        <a href="{% url 'academic_cockpit:schedule' %}"
+                            class="flex items-center px-4 py-3 rounded-xl transition-all duration-200 group {% if 'academics' in request.path %}bg-white/5 text-white{% else %}text-slate-500 hover:text-slate-400 hover:bg-white/5{% endif %}">
+                            <span
+                                class="mr-4 text-lg opacity-80 group-hover:scale-110 transition-transform duration-200">📚</span>
+                            <span class="font-medium">Courses</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="p-6 border-t border-white/5 bg-black/10">
+                {% if user.is_authenticated %}
+                <div class="flex items-center gap-3 mb-4">
+                    <div
+                        class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-violet-600 flex items-center justify-center text-white font-bold text-sm shadow-lg shadow-blue-500/20 ring-2 ring-white/10">
+                        {{ user.username|make_list|first|upper }}
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-semibold text-white truncate font-display">{{ user.username }}</p>
+                        <p class="text-xs text-blue-400 capitalize truncate">{{ user.role }}</p>
+                    </div>
+                </div>
+                <form action="{% url 'logout' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit"
+                        class="w-full text-center bg-white/5 hover:bg-white/10 text-slate-300 py-2.5 px-4 rounded-lg text-xs font-medium transition-all border border-white/5 hover:border-white/10 hover:text-white uppercase tracking-wider">
+                        Sign Out
+                    </button>
+                </form>
+                {% else %}
+                <a href="{% url 'login' %}"
+                    class="block w-full text-center bg-gradient-to-r from-blue-600 to-violet-600 hover:from-blue-500 hover:to-violet-500 text-white py-3 rounded-lg font-medium shadow-lg shadow-blue-500/25 transition-all">Sign
+                    In</a>
+                {% endif %}
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col h-screen overflow-hidden relative z-10">
+
+            <!-- Mobile Header -->
+            <header
+                class="bg-nexus-dark/80 backdrop-blur-md border-b border-white/5 h-16 flex items-center justify-between px-6 md:hidden sticky top-0 z-50">
+                <h1
+                    class="text-xl font-bold font-display bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-violet-400">
+                    Nexus</h1>
+                <button class="text-slate-400 hover:text-white p-2">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </header>
+
+            <main class="flex-1 overflow-y-auto overflow-x-hidden p-6 md:p-8">
+                {% if messages %}
+                <div class="mb-8 space-y-3 max-w-4xl mx-auto">
+                    {% for message in messages %}
+                    <div
+                        class="px-5 py-4 rounded-xl border backdrop-blur-md shadow-lg flex items-center gap-3 {% if message.tags == 'error' %}bg-red-500/10 border-red-500/20 text-red-200{% elif message.tags == 'success' %}bg-green-500/10 border-green-500/20 text-green-200{% else %}bg-blue-500/10 border-blue-500/20 text-blue-200{% endif %}">
+                        <span class="text-lg">{% if message.tags == 'error' %}⚠️{% elif message.tags == 'success' %}🎉{%
+                            else %}💡{% endif %}</span>
+                        <span class="font-medium text-sm">{{ message }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                {% block content %}
+                {% endblock %}
+            </main>
+        </div>
+    </div>
+</body>
+
+</html>

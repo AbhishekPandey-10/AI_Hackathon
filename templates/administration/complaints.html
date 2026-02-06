@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto">
+    <div class="flex justify-between items-end mb-8">
+        <div>
+            <h1 class="text-3xl font-bold text-white font-display">RMS Portal</h1>
+            <p class="text-slate-400 mt-1">Track complaints, inquiries, and security requests.</p>
+        </div>
+        <a href="{% url 'administration:complaint_create' %}"
+            class="bg-red-600 hover:bg-red-500 text-white px-5 py-2.5 rounded-xl font-medium transition-all shadow-lg shadow-red-500/20">
+            + New Ticket
+        </a>
+    </div>
+
+    <div class="grid gap-4">
+        {% for ticket in complaints %}
+        <div class="glass p-5 rounded-xl flex items-center justify-between group hover:bg-white/5 transition-all">
+            <div class="flex items-start gap-4">
+                <div
+                    class="w-10 h-10 rounded-full flex items-center justify-center 
+                    {% if ticket.status == 'resolved' %}bg-green-500/20 text-green-400{% elif ticket.status == 'in_progress' %}bg-yellow-500/20 text-yellow-400{% else %}bg-red-500/20 text-red-400{% endif %}">
+                    {% if ticket.status == 'resolved' %}✓{% elif ticket.status == 'in_progress' %}⚡{% else %}!{% endif
+                    %}
+                </div>
+                <div>
+                    <h3 class="text-white font-semibold">{{ ticket.title }}</h3>
+                    <p class="text-sm text-slate-400">{{ ticket.get_category_display }} • {{ ticket.created_at|date:"M
+                        d" }}</p>
+                </div>
+            </div>
+
+            {% if ticket.status == 'resolved' %}
+            <span
+                class="px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wider bg-green-500/10 text-green-400 border border-green-500/20">
+                {{ ticket.get_status_display }}
+            </span>
+            {% elif ticket.status == 'in_progress' %}
+            <span
+                class="px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wider bg-yellow-500/10 text-yellow-400 border border-yellow-500/20">
+                {{ ticket.get_status_display }}
+            </span>
+            {% else %}
+            <span
+                class="px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wider bg-red-500/10 text-red-400 border border-red-500/20">
+                {{ ticket.get_status_display }}
+            </span>
+            {% endif %}
+
+        </div>
+        {% empty %}
+        <div class="text-center py-20">
+            <p class="text-slate-500">No active complaints. Campus is peaceful.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

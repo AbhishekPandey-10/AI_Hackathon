@@ -1,0 +1,322 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard | Nexus{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto space-y-8">
+    <!-- Welcome Section -->
+    <div class="relative overflow-hidden rounded-3xl p-8 glass group">
+        <div
+            class="absolute top-0 right-0 -mt-4 -mr-4 w-32 h-32 bg-nexus-accent/20 rounded-full blur-3xl group-hover:bg-nexus-accent/30 transition-all duration-700">
+        </div>
+        <div class="relative z-10">
+            <h1 class="text-4xl md:text-5xl font-bold text-white font-display tracking-tight mb-2">
+                Good Evening, <span
+                    class="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-violet-400">{{
+                    user.username|title }}</span>.
+            </h1>
+            <p class="text-slate-400 text-lg max-w-2xl font-light">Your campus universe at a glance. You have <span
+                    class="text-white font-semibold">2 upcoming classes</span> and <span
+                    class="text-white font-semibold">3 new notifications</span>.</p>
+        </div>
+    </div>
+
+    <!-- Quick Stats / Status Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+
+        <!-- Academics Card -->
+        <div
+            class="glass glass-hover rounded-2xl p-6 transition-all duration-300 group cursor-pointer relative overflow-hidden">
+            <div
+                class="absolute inset-0 bg-gradient-to-br from-blue-600/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+            </div>
+            <div class="flex items-center justify-between mb-4 relative z-10">
+                <div
+                    class="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center text-blue-400 group-hover:text-white group-hover:bg-blue-500 transition-all duration-300 shadow-[0_0_15px_rgba(59,130,246,0.2)]">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
+                        </path>
+                    </svg>
+                </div>
+                <span
+                    class="px-3 py-1 bg-blue-500/10 border border-blue-500/20 text-blue-300 text-xs font-semibold rounded-full tracking-wider uppercase">Academic</span>
+            </div>
+            <div class="relative z-10">
+                {% if next_class %}
+                <h3 class="text-lg font-bold text-slate-100 group-hover:text-white transition-colors">
+                    {{ next_class.course.name }}
+                </h3>
+                <p class="text-sm text-slate-400 mt-1">
+                    {{ next_class.location }} • {{ next_class.start_time|time:"g:i A" }}
+                </p>
+                {% else %}
+                <h3 class="text-lg font-bold text-slate-100 group-hover:text-white transition-colors">
+                    No Classes Left
+                </h3>
+                <p class="text-sm text-slate-400 mt-1">Free for the day!</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Mess Card -->
+        <div
+            class="glass glass-hover rounded-2xl p-6 transition-all duration-300 group cursor-pointer relative overflow-hidden">
+            <div
+                class="absolute inset-0 bg-gradient-to-br from-orange-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+            </div>
+            <div class="flex items-center justify-between mb-4 relative z-10">
+                <div
+                    class="w-12 h-12 rounded-xl bg-orange-500/20 flex items-center justify-center text-orange-400 group-hover:text-white group-hover:bg-orange-500 transition-all duration-300 shadow-[0_0_15px_rgba(249,115,22,0.2)]">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4">
+                        </path>
+                    </svg>
+                </div>
+                <span
+                    class="px-3 py-1 bg-orange-500/10 border border-orange-500/20 text-orange-300 text-xs font-semibold rounded-full tracking-wider uppercase">{{
+                    meal_target_name }}</span>
+            </div>
+            <div class="relative z-10">
+                {% if current_meal %}
+                <h3 class="text-lg font-bold text-slate-100 group-hover:text-white transition-colors">{{
+                    current_meal.dish_name }}</h3>
+                <p class="text-sm text-slate-400 mt-1">{{ current_meal.description|truncatechars:30 }}</p>
+                {% if current_meal.calories %}
+                <div class="mt-2 text-xs font-medium text-orange-400">🔥 {{ current_meal.calories }} kcal</div>
+                {% endif %}
+                {% else %}
+                <h3 class="text-lg font-bold text-slate-100 group-hover:text-white transition-colors">Menu Not Revised
+                </h3>
+                <p class="text-sm text-slate-400 mt-1">Check back soon.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Marketplace Card -->
+        <a href="{% url 'student_exchange:marketplace' %}" class="block">
+            <div
+                class="glass glass-hover rounded-2xl p-6 transition-all duration-300 group cursor-pointer relative overflow-hidden">
+                <div
+                    class="absolute inset-0 bg-gradient-to-br from-emerald-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                </div>
+                <div class="flex items-center justify-between mb-4 relative z-10">
+                    <div
+                        class="w-12 h-12 rounded-xl bg-emerald-500/20 flex items-center justify-center text-emerald-400 group-hover:text-white group-hover:bg-emerald-500 transition-all duration-300 shadow-[0_0_15px_rgba(16,185,129,0.2)]">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                        </svg>
+                    </div>
+                    <span
+                        class="px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-xs font-semibold rounded-full tracking-wider uppercase">Market</span>
+                </div>
+                <div class="relative z-10">
+                    <h3 class="text-lg font-bold text-slate-100 group-hover:text-white transition-colors">{{
+                        market_count }}
+                        Active Listings</h3>
+                    <p class="text-sm text-slate-400 mt-1">
+                        {% if latest_market_item %}
+                        New: {{ latest_market_item.title|truncatechars:20 }}
+                        {% else %}
+                        Marketplace is empty
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </a>
+
+        <!-- Travel/Transport Card -->
+        <a href="{% url 'student_exchange:travel_list' %}" class="block">
+            <div
+                class="glass glass-hover rounded-2xl p-6 transition-all duration-300 group cursor-pointer relative overflow-hidden">
+                <div
+                    class="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                </div>
+                <div class="flex items-center justify-between mb-4 relative z-10">
+                    <div
+                        class="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center text-purple-400 group-hover:text-white group-hover:bg-purple-500 transition-all duration-300 shadow-[0_0_15px_rgba(168,85,247,0.2)]">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
+                        </svg>
+                    </div>
+                    <span
+                        class="px-3 py-1 bg-purple-500/10 border border-purple-500/20 text-purple-300 text-xs font-semibold rounded-full tracking-wider uppercase">Travel</span>
+                </div>
+                <div class="relative z-10">
+                    <h3 class="text-lg font-bold text-slate-100 group-hover:text-white transition-colors">{{ trip_count
+                        }}
+                        Active Trips</h3>
+                    <p class="text-sm text-slate-400 mt-1">Find a ride now</p>
+                </div>
+            </div>
+        </a>
+
+        <!-- Fee Status Widget -->
+        <div
+            class="glass glass-hover rounded-2xl p-6 transition-all duration-300 group cursor-pointer relative overflow-hidden">
+            <div class="flex flex-col justify-between h-full">
+                <div class="flex items-center justify-between mb-2">
+                    <span
+                        class="px-3 py-1 bg-white/5 border border-white/10 text-slate-300 text-xs font-semibold rounded-full uppercase tracking-wider">
+                        {% if fee_record %}Sem {{ fee_record.semester }}{% else %}Fees{% endif %}
+                    </span>
+                    <span class="text-xl">💰</span>
+                </div>
+
+                <div class="mt-2">
+                    {% if fee_record %}
+                    <p class="text-xs text-slate-400">Due Amount</p>
+                    <h3
+                        class="text-2xl font-bold {% if fee_record.due_amount > 0 %}text-red-400{% else %}text-emerald-400{% endif %}">
+                        ₹{{ fee_record.due_amount }}
+                    </h3>
+                    <p class="text-[10px] text-slate-500 mt-1">Total: ₹{{ fee_record.total_amount }}</p>
+                    {% else %}
+                    <h3 class="text-lg font-bold text-white">No Dues</h3>
+                    <p class="text-sm text-slate-400">Records clear</p>
+                    {% endif %}
+                </div>
+
+                {% if fee_record and fee_record.due_amount > 0 %}
+                <button
+                    class="mt-3 w-full py-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 rounded-lg text-xs font-bold uppercase transition-colors">
+                    Pay Now
+                </button>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Attendance Card -->
+        <div
+            class="glass glass-hover rounded-2xl p-6 transition-all duration-300 group cursor-pointer relative overflow-hidden">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-slate-400 text-xs font-bold uppercase tracking-widest mb-1">Attendance</p>
+                    <h3 class="text-2xl font-bold text-white">{{ overall_attendance }}%</h3>
+                    <p
+                        class="text-xs mt-1 {% if overall_attendance < 75 %}text-red-400{% else %}text-emerald-400{% endif %}">
+                        {% if overall_attendance < 75 %}Critical Status{% else %}Safe Zone{% endif %} </p>
+                </div>
+
+                <div class="relative w-16 h-16 rounded-full flex items-center justify-center"
+                    style="--attendance-grad: {{ attendance_gradient_val }}; background: var(--attendance-grad);">
+                    <div class="w-12 h-12 bg-nexus-dark rounded-full flex items-center justify-center">
+                        <span class="text-[10px] font-bold text-slate-300">AVG</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Main Dashboard Areas -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+    <!-- Notices Feed -->
+    <div class="lg:col-span-2 space-y-6">
+        <div class="glass rounded-3xl p-8">
+            <div class="flex items-center justify-between mb-8">
+                <h2 class="text-xl font-bold text-white flex items-center">
+                    <span class="w-2 h-8 rounded-full bg-gradient-to-b from-blue-500 to-violet-500 mr-3"></span>
+                    Campus Feed
+                </h2>
+                <button
+                    class="text-xs font-medium text-slate-400 hover:text-white transition-colors uppercase tracking-wider">View
+                    All</button>
+            </div>
+
+            <div class="space-y-4">
+                {% for notice in notices %}
+                <!-- Notice Item -->
+                <div
+                    class="group p-4 rounded-xl hover:bg-white/5 border border-transparent hover:border-white/5 transition-all cursor-pointer">
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0 mt-1">
+                            <div
+                                class="w-10 h-10 rounded-full {% if notice.urgency == 'critical' %}bg-red-500/20 text-red-400 border-red-500/20{% elif notice.urgency == 'urgent' %}bg-orange-500/20 text-orange-400 border-orange-500/20{% else %}bg-blue-500/20 text-blue-400 border-blue-500/20{% endif %} flex items-center justify-center border">
+                                {% if notice.urgency == 'critical' %}
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
+                                    </path>
+                                </svg>
+                                {% else %}
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="ml-4 flex-1">
+                            <div class="flex items-center justify-between">
+                                <h4
+                                    class="text-base font-semibold text-slate-200 group-hover:text-blue-400 transition-colors">
+                                    {{ notice.title }}</h4>
+                                <span class="text-xs text-slate-500">{{ notice.created_at|timesince }} ago</span>
+                            </div>
+                            <p class="text-sm text-slate-400 mt-1 leading-relaxed">{{ notice.summary }}</p>
+                            <p class="text-[10px] text-slate-500 mt-2 uppercase font-bold tracking-wider">{{
+                                notice.source }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="p-8 text-center">
+                    <p class="text-slate-500 italic">No new signals detected.</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Side Widgets -->
+    <div class="space-y-6">
+        <!-- Sell Widget -->
+        <div
+            class="bg-gradient-to-br from-blue-600 to-violet-700 rounded-3xl p-8 text-white text-center shadow-[0_0_40px_rgba(79,70,229,0.3)] relative overflow-hidden group">
+            <div class="absolute inset-0 bg-[url('https://grainy-gradients.com/noise.svg')] opacity-20"></div>
+            <div
+                class="absolute -top-10 -right-10 w-40 h-40 bg-white/20 rounded-full blur-3xl group-hover:bg-white/30 transition-all duration-700">
+            </div>
+
+            <div class="relative z-10">
+                <h3 class="text-2xl font-bold font-display mb-2">Got stuff to sell?</h3>
+                <p class="text-blue-100 text-sm mb-6 leading-relaxed">Turn your old books and cycles into cash. List
+                    them on the Nexus Marketplace in seconds.</p>
+                <button
+                    class="w-full py-3.5 bg-white text-blue-600 rounded-xl font-bold text-sm shadow-xl shadow-black/20 hover:scale-105 active:scale-95 transition-all duration-200">
+                    + Post an Ad
+                </button>
+            </div>
+        </div>
+
+        <!-- Mini Schedule -->
+        <div class="glass rounded-3xl p-6">
+            <h3 class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4">Up Next</h3>
+            <div class="space-y-3">
+                <div class="flex items-center p-3 rounded-lg bg-white/5 border border-white/5">
+                    <div class="w-1 h-8 rounded-full bg-blue-500 mr-3"></div>
+                    <div>
+                        <p class="text-sm font-semibold text-white">Data Structures</p>
+                        <p class="text-xs text-slate-400">2:00 PM • LH-3</p>
+                    </div>
+                </div>
+                <div class="flex items-center p-3 rounded-lg bg-white/5 border border-white/5 opacity-60">
+                    <div class="w-1 h-8 rounded-full bg-slate-600 mr-3"></div>
+                    <div>
+                        <p class="text-sm font-semibold text-white">Operating Systems</p>
+                        <p class="text-xs text-slate-400">4:00 PM • LH-1</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</div>
+{% endblock %}
